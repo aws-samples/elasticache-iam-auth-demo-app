@@ -40,7 +40,7 @@ which generates a .jar file, which you can then use to run you java application.
 ### To generate a token using the demo app use the following command
 ```
 $ java -cp target/ElastiCacheIAMAuthDemoApp-1.0-SNAPSHOT.jar \
-	com.amazon.elasticache.IAMAuthTokenGenerator \
+	com.amazon.elasticache.IAMAuthTokenGeneratorApp \
 	--region us-east-1 \
 	--replication-group-id iam-test-rg-01 \
 	--user-id iam-test-user-01
