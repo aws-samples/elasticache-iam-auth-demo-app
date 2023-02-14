@@ -22,7 +22,7 @@ public class IAMAuthTokenGeneratorApp {
     private String replicationGroupId;
 
     @Parameter(names = {"--region"})
-    private String region = "us-east-1";
+    private String region;
 
     public static void main(String[] args) throws Exception {
         IAMAuthTokenGeneratorApp app = new IAMAuthTokenGeneratorApp();

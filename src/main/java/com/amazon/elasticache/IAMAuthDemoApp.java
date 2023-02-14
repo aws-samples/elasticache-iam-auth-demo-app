@@ -31,7 +31,7 @@ public class IAMAuthDemoApp {
     private int redisPort = 6379;
 
     @Parameter(names = {"--tls"})
-    private boolean tlsEnabled = false;
+    private boolean tlsEnabled = true;
 
     @Parameter(names = {"--cluster-mode"})
     private boolean clusterModeEnabled = false;
