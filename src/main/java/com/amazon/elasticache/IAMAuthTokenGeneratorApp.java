@@ -1,7 +1,7 @@
 package com.amazon.elasticache;
 
-import com.amazonaws.auth.AWSCredentialsProvider;
-import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
+import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.google.common.base.Preconditions;
@@ -44,13 +44,14 @@ public class IAMAuthTokenGeneratorApp {
             "replicationGroupId cannot be be null or emtpy");
 
         // Create a default AWS Credentials provider.
-        // This will look for AWS credentials defined in environment variables or system properties.
-        AWSCredentialsProvider awsCredentialsProvider = new DefaultAWSCredentialsProviderChain();
+        // This will look for AWS credentials as defined in the doc.
+        // https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/credentials-chain.html
+        AwsCredentialsProvider awsCredentialsProvider = DefaultCredentialsProvider.create();
 
         // Create an IAM Auth Token request and signed it using the AWS credentials.
         // The pre-signed request URL is used as an IAM Auth token for Elasticache Redis.
         IAMAuthTokenRequest iamAuthTokenRequest = new IAMAuthTokenRequest(userId, replicationGroupId, region);
-        String iamAuthToken = iamAuthTokenRequest.toSignedRequestUri(awsCredentialsProvider.getCredentials());
+        String iamAuthToken = iamAuthTokenRequest.toSignedRequestUri(awsCredentialsProvider.resolveCredentials());
 
         System.out.println(iamAuthToken);
     }

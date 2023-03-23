@@ -22,10 +22,11 @@
       <artifactId>lettuce-core</artifactId>
       <version>6.2.1.RELEASE</version>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/software.amazon.awssdk/aws-sdk-java -->
     <dependency>
-      <groupId>com.amazonaws</groupId>
-      <artifactId>aws-java-sdk-core</artifactId>
-      <version>1.12.341</version>
+      <groupId>software.amazon.awssdk</groupId>
+      <artifactId>aws-sdk-java</artifactId>
+      <version>2.20.22</version>
     </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>

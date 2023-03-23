@@ -48,7 +48,7 @@ $ java -cp target/ElastiCacheIAMAuthDemoApp-1.0-SNAPSHOT.jar \
 
 ### Now to connect to a cluster using the demo app
 
-The app uses the default [AWS Credentials provider chain](https://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/auth/DefaultAWSCredentialsProviderChain.html) to generate the IAM Auth token (signs the token) using your current AWS caller identity. As host you can configure the primary or reader endpoints, or configuration endpoint for cluster-mode enabled replication groups. If you setup your IAM role as EC2 instance profile, then the temporary credentials for the IAM role will be automatically managed for you. 
+The app uses the default [Default Credentials provider](https://sdk.amazonaws.com/java/api/latest/software/amazon/awssdk/auth/credentials/DefaultCredentialsProvider.html) to generate the IAM Auth token (signs the token) using your current AWS caller identity. As host you can configure the primary or reader endpoints, or configuration endpoint for cluster-mode enabled replication groups. If you setup your IAM role as EC2 instance profile, then the temporary credentials for the IAM role will be automatically managed for you. 
 
 NOTE:
 * your application needs to run in the same VPC as your ElastiCache replication group as well as security group to allow traffic between ElastiCache and EC2
