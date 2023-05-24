@@ -1,10 +1,9 @@
 package com.amazon.elasticache;
 
-import com.amazonaws.auth.AWSCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import com.google.common.base.Suppliers;
 import io.lettuce.core.RedisCredentials;
 import io.lettuce.core.RedisCredentialsProvider;
-import java.net.URISyntaxException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import reactor.core.publisher.Mono;
@@ -17,12 +16,12 @@ public class RedisIAMAuthCredentialsProvider implements RedisCredentialsProvider
 
     private final String userName;
     private final IAMAuthTokenRequest iamAuthTokenRequest;
-    private final AWSCredentialsProvider awsCredentialsProvider;
+    private final AwsCredentialsProvider awsCredentialsProvider;
     private final Supplier<String> iamAuthTokenProvider;
     private static final long TOKEN_CACHE_SECONDS = 600;
 
     public RedisIAMAuthCredentialsProvider(String userName, IAMAuthTokenRequest iamAuthTokenRequest,
-        AWSCredentialsProvider awsCredentialsProvider) {
+        AwsCredentialsProvider awsCredentialsProvider) {
         this.userName = userName;
         this.iamAuthTokenRequest = iamAuthTokenRequest;
         this.awsCredentialsProvider = awsCredentialsProvider;
@@ -51,10 +50,6 @@ public class RedisIAMAuthCredentialsProvider implements RedisCredentialsProvider
      * The token is signed in using the provided AWS credentials.
      */
     private String getIamAuthToken() {
-        try {
-            return iamAuthTokenRequest.toSignedRequestUri(awsCredentialsProvider.getCredentials());
-        } catch (URISyntaxException e) {
-            throw new RuntimeException("Error when creating IAM Auth token", e);
-        }
+        return iamAuthTokenRequest.toSignedRequestUri(awsCredentialsProvider.resolveCredentials());
     }
 }
