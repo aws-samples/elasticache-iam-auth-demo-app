@@ -16,6 +16,18 @@
     <maven.compiler.target>1.7</maven.compiler.target>
   </properties>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>software.amazon.awssdk</groupId>
+        <artifactId>bom</artifactId>
+        <version>2.20.73</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <dependency>
       <groupId>io.lettuce</groupId>
@@ -25,8 +37,15 @@
     <!-- https://mvnrepository.com/artifact/software.amazon.awssdk/aws-sdk-java -->
     <dependency>
       <groupId>software.amazon.awssdk</groupId>
-      <artifactId>aws-sdk-java</artifactId>
-      <version>2.20.22</version>
+      <artifactId>auth</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>software.amazon.awssdk</groupId>
+      <artifactId>sts</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>software.amazon.awssdk</groupId>
+      <artifactId>http-client-spi</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
