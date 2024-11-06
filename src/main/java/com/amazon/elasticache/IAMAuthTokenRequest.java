@@ -20,13 +20,15 @@ public class IAMAuthTokenRequest {
     private static final Duration TOKEN_EXPIRY_DURATION_SECONDS = Duration.ofSeconds(900);
 
     private final String userId;
+    private final Boolean serverless;
     private final String replicationGroupId;
     private final String region;
 
-    public IAMAuthTokenRequest(String userId, String replicationGroupId, String region) {
+    public IAMAuthTokenRequest(String userId, String replicationGroupId, String region, Boolean serverless) {
         this.userId = userId;
         this.replicationGroupId = replicationGroupId;
         this.region = region;
+        this.serverless = serverless;
     }
 
     public String toSignedRequestUri(AwsCredentials credentials) {
@@ -40,12 +42,19 @@ public class IAMAuthTokenRequest {
     }
 
     private SdkHttpFullRequest getSignableRequest() {
-        return SdkHttpFullRequest.builder()
-            .method(REQUEST_METHOD)
-            .uri(getRequestUri())
-            .appendRawQueryParameter(PARAM_ACTION, ACTION_NAME)
-            .appendRawQueryParameter(PARAM_USER, userId)
-            .build();
+        SdkHttpFullRequest.Builder requestBuilder = SdkHttpFullRequest.builder()
+                .method(REQUEST_METHOD)
+                .uri(getRequestUri())
+                .appendRawQueryParameter(PARAM_ACTION, ACTION_NAME)
+                .appendRawQueryParameter(PARAM_USER, userId);
+
+        // if serverless is true then add the 'ServerlessCache' ResourceType parameter
+        if (serverless) {
+            requestBuilder.appendRawQueryParameter("ResourceType", "ServerlessCache");
+        }
+
+        SdkHttpFullRequest request = requestBuilder.build();
+        return request;
     }
 
     private URI getRequestUri() {
@@ -56,11 +65,11 @@ public class IAMAuthTokenRequest {
         Instant expiryInstant = Instant.now().plus(TOKEN_EXPIRY_DURATION_SECONDS);
         Aws4Signer signer = Aws4Signer.create();
         Aws4PresignerParams signerParams = Aws4PresignerParams.builder()
-            .signingRegion(Region.of(region))
-            .awsCredentials(credentials)
-            .signingName(SERVICE_NAME)
-            .expirationTime(expiryInstant)
-            .build();
+                .signingRegion(Region.of(region))
+                .awsCredentials(credentials)
+                .signingName(SERVICE_NAME)
+                .expirationTime(expiryInstant)
+                .build();
         return signer.presign(request, signerParams);
     }
 }

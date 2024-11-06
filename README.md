@@ -42,7 +42,7 @@ which generates a .jar file, which you can then use to run you java application.
 $ java -cp target/ElastiCacheIAMAuthDemoApp-1.0-SNAPSHOT.jar \
 	com.amazon.elasticache.IAMAuthTokenGeneratorApp \
 	--region us-east-1 \
-	--replication-group-id iam-test-rg-01 \
+	--cache-name iam-test-rg-01 \
 	--user-id iam-test-user-01
 ```
 
@@ -58,11 +58,13 @@ NOTE:
 $ java -jar target/ElastiCacheIAMAuthDemoApp-1.0-SNAPSHOT.jar \
 	--redis-host <host> \
 	--region us-east-1 \
-	--replication-group-id iam-test-rg-01 \
+	--cache-name iam-test-rg-01 \
 	--user-id iam-test-user-01 \
 	--tls
 ```
 
 For cluster-mode enabled replication groups, please add the `--cluster-mode` flag.
+
+For serverless caches, please add the `--serverless` flag.
 
 The demo app creates a new connection to the host using the IAM user identity and generates an IAM authentication token.
