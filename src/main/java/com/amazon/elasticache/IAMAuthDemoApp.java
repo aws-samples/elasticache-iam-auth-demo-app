@@ -36,14 +36,17 @@ public class IAMAuthDemoApp {
     @Parameter(names = {"--cluster-mode"})
     private boolean clusterModeEnabled = false;
 
+    @Parameter(names = { "--serverless" })
+    private boolean serverlessEnabled = false;
+
     @Parameter(names = {"--user-id"})
     private String userId;
 
     @Parameter(names = {"--password"})
     private String password;
 
-    @Parameter(names = {"--replication-group-id"})
-    private String replicationGroupId;
+    @Parameter(names = {"--cache-name"})
+    private String cacheName;
 
     @Parameter(names = {"--region"})
     private String region = "us-east-1";
@@ -140,8 +143,8 @@ public class IAMAuthDemoApp {
             return new RedisStaticCredentialsProvider(userId, password);
         }
 
-        Preconditions.checkArgument(!Strings.isNullOrEmpty(replicationGroupId),
-            "replicationGroupId cannot be be null or emtpy");
+        Preconditions.checkArgument(!Strings.isNullOrEmpty(cacheName),
+            "cacheName cannot be be null or emtpy");
 
 
         // Create a default AWS Credentials provider.
@@ -151,7 +154,8 @@ public class IAMAuthDemoApp {
 
         // Create an IAM Auth Token request. Once this request is signed it can be used as an
         // IAM Auth token for Elasticache Redis.
-        IAMAuthTokenRequest iamAuthTokenRequest = new IAMAuthTokenRequest(userId, replicationGroupId, region);
+        IAMAuthTokenRequest iamAuthTokenRequest = new IAMAuthTokenRequest(userId, cacheName, region,
+                serverlessEnabled);
 
         // Create a Redis credentials provider using IAM credentials.
         return new RedisIAMAuthCredentialsProvider(

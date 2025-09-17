@@ -18,8 +18,11 @@ public class IAMAuthTokenGeneratorApp {
     @Parameter(names = {"--user-id"})
     private String userId;
 
-    @Parameter(names = {"--replication-group-id"})
-    private String replicationGroupId;
+    @Parameter(names = {"--cache-name"})
+    private String cacheName;
+
+    @Parameter(names = { "--serverless" })
+    private Boolean serverlessEnabled;
 
     @Parameter(names = {"--region"})
     private String region = "us-east-1";
@@ -40,8 +43,8 @@ public class IAMAuthTokenGeneratorApp {
         Preconditions.checkArgument(!Strings.isNullOrEmpty(userId),
             "userId cannot be be null or emtpy");
 
-        Preconditions.checkArgument(!Strings.isNullOrEmpty(replicationGroupId),
-            "replicationGroupId cannot be be null or emtpy");
+        Preconditions.checkArgument(!Strings.isNullOrEmpty(cacheName),
+            "cacheName cannot be be null or emtpy");
 
         // Create a default AWS Credentials provider.
         // This will look for AWS credentials as defined in the doc.
@@ -50,7 +53,8 @@ public class IAMAuthTokenGeneratorApp {
 
         // Create an IAM Auth Token request and signed it using the AWS credentials.
         // The pre-signed request URL is used as an IAM Auth token for Elasticache Redis.
-        IAMAuthTokenRequest iamAuthTokenRequest = new IAMAuthTokenRequest(userId, replicationGroupId, region);
+        IAMAuthTokenRequest iamAuthTokenRequest = new IAMAuthTokenRequest(userId, cacheName, region,
+                serverlessEnabled);
         String iamAuthToken = iamAuthTokenRequest.toSignedRequestUri(awsCredentialsProvider.resolveCredentials());
 
         System.out.println(iamAuthToken);
