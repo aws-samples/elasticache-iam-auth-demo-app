@@ -1,14 +1,14 @@
 package com.amazon.elasticache;
 
 import java.time.Duration;
+
 import software.amazon.awssdk.auth.credentials.AwsCredentials;
-import software.amazon.awssdk.auth.signer.Aws4Signer;
-import software.amazon.awssdk.auth.signer.params.Aws4PresignerParams;
 import software.amazon.awssdk.http.SdkHttpFullRequest;
 import software.amazon.awssdk.http.SdkHttpMethod;
-import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.http.auth.aws.signer.AwsV4HttpSigner;
+import software.amazon.awssdk.http.auth.spi.signer.SignedRequest;
+
 import java.net.URI;
-import java.time.Instant;
 
 public class IAMAuthTokenRequest {
     private static final SdkHttpMethod REQUEST_METHOD = SdkHttpMethod.GET;
@@ -53,14 +53,16 @@ public class IAMAuthTokenRequest {
     }
 
     private SdkHttpFullRequest sign(SdkHttpFullRequest request, AwsCredentials credentials) {
-        Instant expiryInstant = Instant.now().plus(TOKEN_EXPIRY_DURATION_SECONDS);
-        Aws4Signer signer = Aws4Signer.create();
-        Aws4PresignerParams signerParams = Aws4PresignerParams.builder()
-            .signingRegion(Region.of(region))
-            .awsCredentials(credentials)
-            .signingName(SERVICE_NAME)
-            .expirationTime(expiryInstant)
-            .build();
-        return signer.presign(request, signerParams);
+        AwsV4HttpSigner signer = AwsV4HttpSigner.create();
+        SignedRequest signedRequest = signer.sign(r -> r.identity(credentials)
+            .request(request)
+            .putProperty(AwsV4HttpSigner.SERVICE_SIGNING_NAME, SERVICE_NAME)
+            .putProperty(AwsV4HttpSigner.REGION_NAME, region)
+            .putProperty(AwsV4HttpSigner.AUTH_LOCATION, AwsV4HttpSigner.AuthLocation.QUERY_STRING)
+            .putProperty(AwsV4HttpSigner.EXPIRATION_DURATION, TOKEN_EXPIRY_DURATION_SECONDS)
+            .build()
+        );
+        
+        return (SdkHttpFullRequest)signedRequest.request();
     }
 }
